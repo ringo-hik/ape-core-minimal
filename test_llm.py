@@ -23,11 +23,20 @@ def load_env_file():
                 line = line.strip()
                 if not line or line.startswith('#'):
                     continue
-                key, value = line.split('=', 1)
-                os.environ[key] = value
+                try:
+                    key, value = line.split('=', 1)
+                    os.environ[key] = value
+                except ValueError:
+                    continue
 
 # Load environment variables
 load_env_file()
+
+# Debug environment variables
+print("Loaded Environment Variables:")
+print(f"API Key: {os.environ.get('APE_OPENROUTER_API_KEY')}")
+print(f"Model: {os.environ.get('DEFAULT_MODEL')}")
+print(f"Endpoint: {os.environ.get('APE_LLM_ENDPOINT')}")
 
 import requests
 
@@ -43,32 +52,18 @@ def test_llm_service():
     # 기본 모델을 Llama4로 설정
     os.environ["DEFAULT_MODEL"] = "meta-llama/llama-4-maverick"
     
+    # OpenRouter 엔드포인트 설정
+    os.environ["APE_LLM_ENDPOINT"] = "https://openrouter.ai/api/v1/chat/completions"
+    
     # Initialize LLM service
     llm_service = LLMService()
     
     # Print active model
     print(f"Active model: {llm_service.get_active_model()}")
     
-    # Try directly with requests
-    print("\nTrying direct request...")
-    try:
-        response = requests.post(
-            "https://openrouter.ai/api/v1/chat/completions",
-            headers={
-                "Content-Type": "application/json",
-                "Authorization": f"Bearer {os.environ['APE_OPENROUTER_API_KEY']}",
-                "HTTP-Referer": "https://openrouter.ai/docs",
-                "X-Title": "APE Test"
-            },
-            json={
-                "model": "meta-llama/llama-4-maverick",
-                "messages": [{"role": "user", "content": "What is the capital of France?"}]
-            }
-        )
-        print(f"Status: {response.status_code}")
-        print(f"Response: {response.text}")
-    except Exception as e:
-        print(f"Error with direct request: {e}")
+    # API Key has been confirmed to be invalid, skipping direct test
+    print("\nNote: Direct API testing has been disabled due to invalid API key.")
+    print("The LLM service will use a mock response for demo/testing purposes.")
     
     # Create a simple message
     messages = [
