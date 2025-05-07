@@ -21,7 +21,11 @@ class SWDPAgent(DBAgent):
         self.user = os.environ.get("APE_SWDP_DB_USER", "swdp-user")
         self.password = os.environ.get("APE_SWDP_DB_PASSWORD", "dummy-password")
         self.database = os.environ.get("APE_SWDP_DB_NAME", "swdp")
-        self.schema_path = os.environ.get("APE_SWDP_SCHEMA_PATH", "/home/hik90/ape/ape-supervisor/ape-core/schemas/swdp-db.json")
+        
+        # 프로젝트 루트 디렉토리를 기준으로 스키마 파일 경로 설정
+        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        default_schema_path = os.path.join(base_dir, "schemas", "swdp-db.json")
+        self.schema_path = os.environ.get("APE_SWDP_SCHEMA_PATH", default_schema_path)
         
         # Load schema
         self._schema = self._load_schema()

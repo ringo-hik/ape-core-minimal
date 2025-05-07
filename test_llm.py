@@ -35,8 +35,10 @@ def test_llm_service():
     """Test the LLM service"""
     print("Testing LLM service...")
     
-    # Initialize LLM service with direct environment variable access
-    os.environ["APE_OPENROUTER_API_KEY"] = "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"
+    # API 키는 .env 파일이나 환경 변수에서 불러와야 합니다
+    # 테스트 목적으로 이미 환경 변수에 설정되어 있지 않은 경우에만 기본값을 사용합니다
+    if "APE_OPENROUTER_API_KEY" not in os.environ:
+        os.environ["APE_OPENROUTER_API_KEY"] = "YOUR_OPENROUTER_API_KEY_HERE"
     
     # Initialize LLM service
     llm_service = LLMService()
@@ -51,7 +53,7 @@ def test_llm_service():
             "https://openrouter.ai/api/v1/chat/completions",
             headers={
                 "Content-Type": "application/json",
-                "Authorization": "Bearer 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",
+                "Authorization": f"Bearer {os.environ['APE_OPENROUTER_API_KEY']}",
                 "HTTP-Referer": "https://openrouter.ai/docs",
                 "X-Title": "APE Test"
             },
