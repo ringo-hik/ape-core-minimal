@@ -1,678 +1,937 @@
 {
-  "tables": {
-    "projects": {
-      "name": "projects",
-      "columns": [
-        {
-          "name": "id",
-          "type": "int",
-          "length": null,
-          "nullable": false,
-          "key": "PRI",
-          "extra": "auto_increment",
-          "comment": "Project ID"
-        },
-        {
-          "name": "name",
-          "type": "varchar",
-          "length": 255,
-          "nullable": false,
-          "key": "",
-          "extra": "",
-          "comment": "Project name"
-        },
-        {
-          "name": "description",
-          "type": "text",
-          "length": null,
-          "nullable": true,
-          "key": "",
-          "extra": "",
-          "comment": "Project description"
-        },
-        {
-          "name": "status",
-          "type": "enum",
-          "length": "'active','archived','draft'",
-          "nullable": false,
-          "key": "",
-          "extra": "",
-          "comment": "Project status"
-        },
-        {
-          "name": "created_at",
-          "type": "timestamp",
-          "length": null,
-          "nullable": false,
-          "key": "",
-          "extra": "DEFAULT_GENERATED",
-          "comment": "Creation timestamp"
-        },
-        {
-          "name": "updated_at",
-          "type": "timestamp",
-          "length": null,
-          "nullable": true,
-          "key": "",
-          "extra": "DEFAULT_GENERATED ON UPDATE CURRENT_TIMESTAMP",
-          "comment": "Last update timestamp"
-        },
-        {
-          "name": "owner_id",
-          "type": "int",
-          "length": null,
-          "nullable": false,
-          "key": "MUL",
-          "extra": "",
-          "comment": "Project owner user ID"
-        }
-      ],
-      "indexes": [
-        {
-          "name": "PRIMARY",
-          "unique": true,
-          "columns": ["id"]
-        },
-        {
-          "name": "project_name_idx",
-          "unique": true,
-          "columns": ["name"]
-        },
-        {
-          "name": "owner_id_idx",
-          "unique": false,
-          "columns": ["owner_id"]
-        }
-      ]
-    },
-    "users": {
-      "name": "users",
-      "columns": [
-        {
-          "name": "id",
-          "type": "int",
-          "length": null,
-          "nullable": false,
-          "key": "PRI",
-          "extra": "auto_increment",
-          "comment": "User ID"
-        },
-        {
-          "name": "username",
-          "type": "varchar",
-          "length": 50,
-          "nullable": false,
-          "key": "UNI",
-          "extra": "",
-          "comment": "Username"
-        },
-        {
-          "name": "email",
-          "type": "varchar",
-          "length": 255,
-          "nullable": false,
-          "key": "UNI",
-          "extra": "",
-          "comment": "Email address"
-        },
-        {
-          "name": "name",
-          "type": "varchar",
-          "length": 255,
-          "nullable": false,
-          "key": "",
-          "extra": "",
-          "comment": "Full name"
-        },
-        {
-          "name": "role",
-          "type": "enum",
-          "length": "'admin','user','guest'",
-          "nullable": false,
-          "key": "",
-          "extra": "",
-          "comment": "User role"
-        },
-        {
-          "name": "status",
-          "type": "enum",
-          "length": "'active','inactive','suspended'",
-          "nullable": false,
-          "key": "",
-          "extra": "",
-          "comment": "User status"
-        },
-        {
-          "name": "created_at",
-          "type": "timestamp",
-          "length": null,
-          "nullable": false,
-          "key": "",
-          "extra": "DEFAULT_GENERATED",
-          "comment": "Creation timestamp"
-        },
-        {
-          "name": "last_login",
-          "type": "timestamp",
-          "length": null,
-          "nullable": true,
-          "key": "",
-          "extra": "",
-          "comment": "Last login timestamp"
-        }
-      ],
-      "indexes": [
-        {
-          "name": "PRIMARY",
-          "unique": true,
-          "columns": ["id"]
-        },
-        {
-          "name": "username_idx",
-          "unique": true,
-          "columns": ["username"]
-        },
-        {
-          "name": "email_idx",
-          "unique": true,
-          "columns": ["email"]
-        }
-      ]
-    },
-    "project_members": {
-      "name": "project_members",
-      "columns": [
-        {
-          "name": "project_id",
-          "type": "int",
-          "length": null,
-          "nullable": false,
-          "key": "PRI",
-          "extra": "",
-          "comment": "Project ID"
-        },
-        {
-          "name": "user_id",
-          "type": "int",
-          "length": null,
-          "nullable": false,
-          "key": "PRI",
-          "extra": "",
-          "comment": "User ID"
-        },
-        {
-          "name": "role",
-          "type": "enum",
-          "length": "'owner','maintainer','developer','guest'",
-          "nullable": false,
-          "key": "",
-          "extra": "",
-          "comment": "Member role in project"
-        },
-        {
-          "name": "joined_at",
-          "type": "timestamp",
-          "length": null,
-          "nullable": false,
-          "key": "",
-          "extra": "DEFAULT_GENERATED",
-          "comment": "Joined timestamp"
-        }
-      ],
-      "indexes": [
-        {
-          "name": "PRIMARY",
-          "unique": true,
-          "columns": ["project_id", "user_id"]
-        },
-        {
-          "name": "project_id_idx",
-          "unique": false,
-          "columns": ["project_id"]
-        },
-        {
-          "name": "user_id_idx",
-          "unique": false,
-          "columns": ["user_id"]
-        }
-      ]
-    },
-    "repositories": {
-      "name": "repositories",
-      "columns": [
-        {
-          "name": "id",
-          "type": "int",
-          "length": null,
-          "nullable": false,
-          "key": "PRI",
-          "extra": "auto_increment",
-          "comment": "Repository ID"
-        },
-        {
-          "name": "project_id",
-          "type": "int",
-          "length": null,
-          "nullable": false,
-          "key": "MUL",
-          "extra": "",
-          "comment": "Project ID"
-        },
-        {
-          "name": "name",
-          "type": "varchar",
-          "length": 255,
-          "nullable": false,
-          "key": "",
-          "extra": "",
-          "comment": "Repository name"
-        },
-        {
-          "name": "description",
-          "type": "text",
-          "length": null,
-          "nullable": true,
-          "key": "",
-          "extra": "",
-          "comment": "Repository description"
-        },
-        {
-          "name": "url",
-          "type": "varchar",
-          "length": 255,
-          "nullable": false,
-          "key": "",
-          "extra": "",
-          "comment": "Repository URL"
-        },
-        {
-          "name": "type",
-          "type": "enum",
-          "length": "'git','svn'",
-          "nullable": false,
-          "key": "",
-          "extra": "",
-          "comment": "Repository type"
-        },
-        {
-          "name": "created_at",
-          "type": "timestamp",
-          "length": null,
-          "nullable": false,
-          "key": "",
-          "extra": "DEFAULT_GENERATED",
-          "comment": "Creation timestamp"
-        },
-        {
-          "name": "updated_at",
-          "type": "timestamp",
-          "length": null,
-          "nullable": true,
-          "key": "",
-          "extra": "DEFAULT_GENERATED ON UPDATE CURRENT_TIMESTAMP",
-          "comment": "Last update timestamp"
-        }
-      ],
-      "indexes": [
-        {
-          "name": "PRIMARY",
-          "unique": true,
-          "columns": ["id"]
-        },
-        {
-          "name": "project_repo_name_idx",
-          "unique": true,
-          "columns": ["project_id", "name"]
-        },
-        {
-          "name": "project_id_idx",
-          "unique": false,
-          "columns": ["project_id"]
-        }
-      ]
-    },
-    "tasks": {
-      "name": "tasks",
-      "columns": [
-        {
-          "name": "id",
-          "type": "int",
-          "length": null,
-          "nullable": false,
-          "key": "PRI",
-          "extra": "auto_increment",
-          "comment": "Task ID"
-        },
-        {
-          "name": "project_id",
-          "type": "int",
-          "length": null,
-          "nullable": false,
-          "key": "MUL",
-          "extra": "",
-          "comment": "Project ID"
-        },
-        {
-          "name": "title",
-          "type": "varchar",
-          "length": 255,
-          "nullable": false,
-          "key": "",
-          "extra": "",
-          "comment": "Task title"
-        },
-        {
-          "name": "description",
-          "type": "text",
-          "length": null,
-          "nullable": true,
-          "key": "",
-          "extra": "",
-          "comment": "Task description"
-        },
-        {
-          "name": "status",
-          "type": "enum",
-          "length": "'open','in_progress','review','closed'",
-          "nullable": false,
-          "key": "",
-          "extra": "",
-          "comment": "Task status"
-        },
-        {
-          "name": "priority",
-          "type": "enum",
-          "length": "'low','medium','high','critical'",
-          "nullable": false,
-          "key": "",
-          "extra": "",
-          "comment": "Task priority"
-        },
-        {
-          "name": "assignee_id",
-          "type": "int",
-          "length": null,
-          "nullable": true,
-          "key": "MUL",
-          "extra": "",
-          "comment": "Assignee user ID"
-        },
-        {
-          "name": "reporter_id",
-          "type": "int",
-          "length": null,
-          "nullable": false,
-          "key": "MUL",
-          "extra": "",
-          "comment": "Reporter user ID"
-        },
-        {
-          "name": "created_at",
-          "type": "timestamp",
-          "length": null,
-          "nullable": false,
-          "key": "",
-          "extra": "DEFAULT_GENERATED",
-          "comment": "Creation timestamp"
-        },
-        {
-          "name": "updated_at",
-          "type": "timestamp",
-          "length": null,
-          "nullable": true,
-          "key": "",
-          "extra": "DEFAULT_GENERATED ON UPDATE CURRENT_TIMESTAMP",
-          "comment": "Last update timestamp"
-        },
-        {
-          "name": "due_date",
-          "type": "date",
-          "length": null,
-          "nullable": true,
-          "key": "",
-          "extra": "",
-          "comment": "Due date"
-        }
-      ],
-      "indexes": [
-        {
-          "name": "PRIMARY",
-          "unique": true,
-          "columns": ["id"]
-        },
-        {
-          "name": "project_id_idx",
-          "unique": false,
-          "columns": ["project_id"]
-        },
-        {
-          "name": "assignee_id_idx",
-          "unique": false,
-          "columns": ["assignee_id"]
-        },
-        {
-          "name": "reporter_id_idx",
-          "unique": false,
-          "columns": ["reporter_id"]
-        }
-      ]
-    },
-    "documents": {
-      "name": "documents",
-      "columns": [
-        {
-          "name": "id",
-          "type": "int",
-          "length": null,
-          "nullable": false,
-          "key": "PRI",
-          "extra": "auto_increment",
-          "comment": "Document ID"
-        },
-        {
-          "name": "project_id",
-          "type": "int",
-          "length": null,
-          "nullable": false,
-          "key": "MUL",
-          "extra": "",
-          "comment": "Project ID"
-        },
-        {
-          "name": "title",
-          "type": "varchar",
-          "length": 255,
-          "nullable": false,
-          "key": "",
-          "extra": "",
-          "comment": "Document title"
-        },
-        {
-          "name": "content",
-          "type": "text",
-          "length": null,
-          "nullable": true,
-          "key": "",
-          "extra": "",
-          "comment": "Document content"
-        },
-        {
-          "name": "author_id",
-          "type": "int",
-          "length": null,
-          "nullable": false,
-          "key": "MUL",
-          "extra": "",
-          "comment": "Author user ID"
-        },
-        {
-          "name": "created_at",
-          "type": "timestamp",
-          "length": null,
-          "nullable": false,
-          "key": "",
-          "extra": "DEFAULT_GENERATED",
-          "comment": "Creation timestamp"
-        },
-        {
-          "name": "updated_at",
-          "type": "timestamp",
-          "length": null,
-          "nullable": true,
-          "key": "",
-          "extra": "DEFAULT_GENERATED ON UPDATE CURRENT_TIMESTAMP",
-          "comment": "Last update timestamp"
-        }
-      ],
-      "indexes": [
-        {
-          "name": "PRIMARY",
-          "unique": true,
-          "columns": ["id"]
-        },
-        {
-          "name": "project_title_idx",
-          "unique": true,
-          "columns": ["project_id", "title"]
-        },
-        {
-          "name": "project_id_idx",
-          "unique": false,
-          "columns": ["project_id"]
-        },
-        {
-          "name": "author_id_idx",
-          "unique": false,
-          "columns": ["author_id"]
-        }
-      ]
-    }
+  "name": "SWDP Database",
+  "description": "Software Development Platform Database Schema",
+  "database": {
+    "type": "MySQL",
+    "version": "5.7"
   },
-  "views": {
-    "project_activities": {
-      "name": "project_activities",
-      "query": "SELECT p.id AS project_id, p.name AS project_name, 'task' AS activity_type, t.id AS activity_id, t.title AS activity_title, t.created_at AS activity_time, u.name AS user_name FROM projects p JOIN tasks t ON p.id = t.project_id JOIN users u ON t.reporter_id = u.id UNION SELECT p.id AS project_id, p.name AS project_name, 'document' AS activity_type, d.id AS activity_id, d.title AS activity_title, d.created_at AS activity_time, u.name AS user_name FROM projects p JOIN documents d ON p.id = d.project_id JOIN users u ON d.author_id = u.id ORDER BY activity_time DESC",
+  "tables": {
+    "SWP_PROJECT_MST": {
+      "name": "SWP_PROJECT_MST",
+      "description": "Project master information table",
       "columns": [
         {
-          "name": "project_id",
-          "type": "int"
+          "name": "PROJECT_ID",
+          "type": "INT(11)",
+          "nullable": false,
+          "key": "PRIMARY KEY",
+          "extra": "AUTO_INCREMENT",
+          "description": "Unique project identifier"
         },
         {
-          "name": "project_name",
-          "type": "varchar"
+          "name": "PROJECT_NAME",
+          "type": "VARCHAR(100)",
+          "nullable": false,
+          "description": "Project name"
         },
         {
-          "name": "activity_type",
-          "type": "varchar"
+          "name": "PROJECT_STATUS_CD",
+          "type": "VARCHAR(20)",
+          "nullable": false,
+          "description": "Project status code (S_ACTIVE, S_INACTIVE)"
         },
         {
-          "name": "activity_id",
-          "type": "int"
+          "name": "CREATED_DATE",
+          "type": "DATETIME",
+          "nullable": false,
+          "description": "Creation timestamp"
         },
         {
-          "name": "activity_title",
-          "type": "varchar"
+          "name": "MODIFIED_DATE",
+          "type": "DATETIME",
+          "nullable": false,
+          "description": "Last modification timestamp"
         },
         {
-          "name": "activity_time",
-          "type": "timestamp"
+          "name": "CREATOR",
+          "type": "INT(11)",
+          "nullable": true,
+          "key": "FOREIGN KEY",
+          "references": "TN_CF_USER(USER_ID)",
+          "description": "User ID of project creator"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PK_PROJECT",
+          "columns": ["PROJECT_ID"],
+          "type": "PRIMARY"
         },
         {
-          "name": "user_name",
-          "type": "varchar"
+          "name": "IDX_PROJECT_STATUS",
+          "columns": ["PROJECT_STATUS_CD"],
+          "type": "INDEX"
         }
       ]
     },
-    "user_assignments": {
-      "name": "user_assignments",
-      "query": "SELECT u.id AS user_id, u.name AS user_name, p.id AS project_id, p.name AS project_name, COUNT(t.id) AS task_count FROM users u JOIN project_members pm ON u.id = pm.user_id JOIN projects p ON pm.project_id = p.id LEFT JOIN tasks t ON p.id = t.project_id AND t.assignee_id = u.id AND t.status != 'closed' GROUP BY u.id, p.id ORDER BY u.name, p.name",
+    "SWP_PROJECT_MEMBER": {
+      "name": "SWP_PROJECT_MEMBER",
+      "description": "Project member information table",
       "columns": [
         {
-          "name": "user_id",
-          "type": "int"
+          "name": "PROJECT_ID",
+          "type": "INT(11)",
+          "nullable": false,
+          "description": "Project ID"
         },
         {
-          "name": "user_name",
-          "type": "varchar"
+          "name": "USER_ID",
+          "type": "INT(11)",
+          "nullable": false,
+          "description": "User ID"
         },
         {
-          "name": "project_id",
-          "type": "int"
+          "name": "ROLE_NM",
+          "type": "VARCHAR(20)",
+          "nullable": true,
+          "description": "Role name (TL, PL, NULL)"
         },
         {
-          "name": "project_name",
-          "type": "varchar"
+          "name": "CREATED_DATE",
+          "type": "DATETIME",
+          "nullable": false,
+          "description": "Creation timestamp"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PK_PROJECT_MEMBER",
+          "columns": ["PROJECT_ID", "USER_ID"],
+          "type": "PRIMARY"
         },
         {
-          "name": "task_count",
-          "type": "bigint"
+          "name": "FK_PROJECT_ID",
+          "columns": ["PROJECT_ID"],
+          "type": "FOREIGN KEY",
+          "references": "SWP_PROJECT_MST(PROJECT_ID)"
+        },
+        {
+          "name": "FK_USER_ID",
+          "columns": ["USER_ID"],
+          "type": "FOREIGN KEY",
+          "references": "TN_CF_USER(USER_ID)"
         }
       ]
+    },
+    "SWP_PROJECT_BUILD_PLAN": {
+      "name": "SWP_PROJECT_BUILD_PLAN",
+      "description": "Project build plan table",
+      "columns": [
+        {
+          "name": "PROJECT_PLAN_ID",
+          "type": "INT(11)",
+          "nullable": false,
+          "key": "PRIMARY KEY",
+          "extra": "AUTO_INCREMENT",
+          "description": "Unique build plan identifier"
+        },
+        {
+          "name": "PROJECT_ID",
+          "type": "INT(11)",
+          "nullable": false,
+          "description": "Project ID"
+        },
+        {
+          "name": "BUILD_SUB_TYPE",
+          "type": "VARCHAR(50)",
+          "nullable": true,
+          "description": "Build type (FIL, HIL, rel, etc.)"
+        },
+        {
+          "name": "BUILD_TYPE_CD",
+          "type": "VARCHAR(50)",
+          "nullable": false,
+          "description": "Build type code (BT_KPI, BT_RELEASE)"
+        },
+        {
+          "name": "AUTO_BUILD_YN",
+          "type": "CHAR(1)",
+          "nullable": true,
+          "default": "N",
+          "description": "Auto build flag (Y, N)"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATETIME",
+          "nullable": false,
+          "description": "Plan creation timestamp"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PK_PROJECT_PLAN",
+          "columns": ["PROJECT_PLAN_ID"],
+          "type": "PRIMARY"
+        },
+        {
+          "name": "FK_PROJECT_ID",
+          "columns": ["PROJECT_ID"],
+          "type": "FOREIGN KEY",
+          "references": "SWP_PROJECT_MST(PROJECT_ID)"
+        },
+        {
+          "name": "IDX_BUILD_TYPE",
+          "columns": ["BUILD_TYPE_CD"],
+          "type": "INDEX"
+        }
+      ]
+    },
+    "SWP_PROJECT_BUILD_REQUEST": {
+      "name": "SWP_PROJECT_BUILD_REQUEST",
+      "description": "Build execution request table",
+      "columns": [
+        {
+          "name": "PROJECT_REQUEST_ID",
+          "type": "INT(11)",
+          "nullable": false,
+          "key": "PRIMARY KEY",
+          "extra": "AUTO_INCREMENT",
+          "description": "Unique build request identifier"
+        },
+        {
+          "name": "PROJECT_PLAN_ID",
+          "type": "INT(11)",
+          "nullable": false,
+          "description": "Build plan ID"
+        },
+        {
+          "name": "BUILD_SUB_TYPE",
+          "type": "VARCHAR(50)",
+          "nullable": true,
+          "description": "Build type (FIL, HIL, rel, etc.)"
+        },
+        {
+          "name": "BUILD_TYPE_CD",
+          "type": "VARCHAR(50)",
+          "nullable": false,
+          "description": "Build type code (BT_KPI, BT_RELEASE, etc.)"
+        },
+        {
+          "name": "AUTO_BUILD_YN",
+          "type": "CHAR(1)",
+          "nullable": true,
+          "default": "N",
+          "description": "Auto build flag (Y, N)"
+        },
+        {
+          "name": "CREATOR",
+          "type": "INT(11)",
+          "nullable": true,
+          "description": "User ID who initiated the build request"
+        },
+        {
+          "name": "SAM_YN",
+          "type": "CHAR(1)",
+          "nullable": true,
+          "default": "N",
+          "description": "Run SAM test flag (Y/N)"
+        },
+        {
+          "name": "COVERITY_YN",
+          "type": "CHAR(1)",
+          "nullable": true,
+          "default": "N",
+          "description": "Run COVERITY test flag (Y/N)"
+        },
+        {
+          "name": "DOBEE_YN",
+          "type": "CHAR(1)",
+          "nullable": true,
+          "default": "N",
+          "description": "Run DOBEE test flag (Y/N)"
+        },
+        {
+          "name": "STARS_YN",
+          "type": "CHAR(1)",
+          "nullable": true,
+          "default": "N",
+          "description": "Run STARS test flag (Y/N)"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATETIME",
+          "nullable": false,
+          "description": "Request creation timestamp"
+        },
+        {
+          "name": "MODIFIED_DATE",
+          "type": "DATETIME",
+          "nullable": false,
+          "description": "Last modification timestamp"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PK_BUILD_REQUEST",
+          "columns": ["PROJECT_REQUEST_ID"],
+          "type": "PRIMARY"
+        },
+        {
+          "name": "FK_PROJECT_PLAN_ID",
+          "columns": ["PROJECT_PLAN_ID"],
+          "type": "FOREIGN KEY",
+          "references": "SWP_PROJECT_BUILD_PLAN(PROJECT_PLAN_ID)"
+        },
+        {
+          "name": "FK_CREATOR",
+          "columns": ["CREATOR"],
+          "type": "FOREIGN KEY",
+          "references": "TN_CF_USER(USER_ID)"
+        }
+      ]
+    },
+    "SWP_TEST_RESULT_BUILD": {
+      "name": "SWP_TEST_RESULT_BUILD",
+      "description": "Build execution result table",
+      "columns": [
+        {
+          "name": "BUILD_REQUEST_ID",
+          "type": "INT(11)",
+          "nullable": false,
+          "key": "PRIMARY KEY",
+          "description": "Build request ID"
+        },
+        {
+          "name": "RESULT_CD",
+          "type": "VARCHAR(20)",
+          "nullable": true,
+          "description": "Result code (RT_SUCCESS, RT_FAIL)"
+        },
+        {
+          "name": "BUILD_ROUND",
+          "type": "INT(11)",
+          "nullable": true,
+          "description": "Build round number"
+        },
+        {
+          "name": "START_TIME",
+          "type": "DATETIME",
+          "nullable": true,
+          "description": "Build start time"
+        },
+        {
+          "name": "END_TIME",
+          "type": "DATETIME",
+          "nullable": true,
+          "description": "Build end time"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATETIME",
+          "nullable": false,
+          "description": "Result creation timestamp"
+        },
+        {
+          "name": "MODIFIED_DATE",
+          "type": "DATETIME",
+          "nullable": false,
+          "description": "Last modification timestamp"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PK_TEST_RESULT_BUILD",
+          "columns": ["BUILD_REQUEST_ID"],
+          "type": "PRIMARY"
+        },
+        {
+          "name": "FK_BUILD_REQUEST_ID",
+          "columns": ["BUILD_REQUEST_ID"],
+          "type": "FOREIGN KEY",
+          "references": "SWP_PROJECT_BUILD_REQUEST(PROJECT_REQUEST_ID)"
+        },
+        {
+          "name": "IDX_RESULT_CD",
+          "columns": ["RESULT_CD"],
+          "type": "INDEX"
+        }
+      ]
+    },
+    "SWP_TEST_RESULT_SAM": {
+      "name": "SWP_TEST_RESULT_SAM",
+      "description": "SAM test result table",
+      "columns": [
+        {
+          "name": "BUILD_REQUEST_ID",
+          "type": "INT(11)",
+          "nullable": false,
+          "key": "PRIMARY KEY",
+          "description": "Build request ID"
+        },
+        {
+          "name": "RESULT_CD",
+          "type": "VARCHAR(20)",
+          "nullable": true,
+          "description": "Result code (RT_SUCCESS, RT_FAIL)"
+        },
+        {
+          "name": "SCORE",
+          "type": "DECIMAL(5,2)",
+          "nullable": true,
+          "description": "Overall SAM score"
+        },
+        {
+          "name": "CC",
+          "type": "DECIMAL(5,2)",
+          "nullable": true,
+          "description": "Code Complexity score (max 5.00)"
+        },
+        {
+          "name": "DC",
+          "type": "DECIMAL(5,2)",
+          "nullable": true,
+          "description": "Data Complexity score (max 5.00)"
+        },
+        {
+          "name": "MCD",
+          "type": "DECIMAL(5,2)",
+          "nullable": true,
+          "description": "Method Call Depth score (max 5.00)"
+        },
+        {
+          "name": "CBO",
+          "type": "DECIMAL(5,2)",
+          "nullable": true,
+          "description": "Coupling Between Objects score (max 5.00)"
+        },
+        {
+          "name": "CLASS_LOC",
+          "type": "DECIMAL(5,2)",
+          "nullable": true,
+          "description": "Class Lines of Code score (max 5.00)"
+        },
+        {
+          "name": "GV",
+          "type": "DECIMAL(5,2)",
+          "nullable": true,
+          "description": "Global Variables score (max 5.00)"
+        },
+        {
+          "name": "PP",
+          "type": "DECIMAL(5,2)",
+          "nullable": true,
+          "description": "Programming Practices score (max 5.00)"
+        },
+        {
+          "name": "CODE_LOC",
+          "type": "INT(11)",
+          "nullable": true,
+          "description": "Code Lines of Code"
+        },
+        {
+          "name": "TOTAL_LOC",
+          "type": "INT(11)",
+          "nullable": true,
+          "description": "Total Lines of Code (code + all files)"
+        },
+        {
+          "name": "MODIFIED_DATE",
+          "type": "DATETIME",
+          "nullable": false,
+          "description": "Last modification timestamp"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PK_TEST_RESULT_SAM",
+          "columns": ["BUILD_REQUEST_ID"],
+          "type": "PRIMARY"
+        },
+        {
+          "name": "FK_BUILD_REQUEST_ID",
+          "columns": ["BUILD_REQUEST_ID"],
+          "type": "FOREIGN KEY",
+          "references": "SWP_PROJECT_BUILD_REQUEST(PROJECT_REQUEST_ID)"
+        }
+      ]
+    },
+    "SWP_TEST_RESULT_COVERITY": {
+      "name": "SWP_TEST_RESULT_COVERITY",
+      "description": "Coverity test result table",
+      "columns": [
+        {
+          "name": "BUILD_REQUEST_ID",
+          "type": "INT(11)",
+          "nullable": false,
+          "key": "PRIMARY KEY",
+          "description": "Build request ID"
+        },
+        {
+          "name": "RESULT_CD",
+          "type": "VARCHAR(20)",
+          "nullable": true,
+          "description": "Result code (RT_SUCCESS, RT_FAIL)"
+        },
+        {
+          "name": "SCORE",
+          "type": "INT(11)",
+          "nullable": true,
+          "description": "Coverity score"
+        },
+        {
+          "name": "SNAPSHOT_ID",
+          "type": "INT(11)",
+          "nullable": true,
+          "description": "Coverity analysis snapshot identifier"
+        },
+        {
+          "name": "TU_SUCCESS",
+          "type": "INT(11)",
+          "nullable": true,
+          "description": "Count of successful translation units"
+        },
+        {
+          "name": "TU_FAILURE",
+          "type": "INT(11)",
+          "nullable": true,
+          "description": "Count of translation unit failures"
+        },
+        {
+          "name": "UNRESOLVED_HIGH",
+          "type": "INT(11)",
+          "nullable": true,
+          "description": "Count of unresolved high severity issues"
+        },
+        {
+          "name": "UNRESOLVED_MEDIUM",
+          "type": "INT(11)",
+          "nullable": true,
+          "description": "Count of unresolved medium severity issues"
+        },
+        {
+          "name": "MODIFIED_DATE",
+          "type": "DATETIME",
+          "nullable": false,
+          "description": "Last modification timestamp"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PK_TEST_RESULT_COVERITY",
+          "columns": ["BUILD_REQUEST_ID"],
+          "type": "PRIMARY"
+        },
+        {
+          "name": "FK_BUILD_REQUEST_ID",
+          "columns": ["BUILD_REQUEST_ID"],
+          "type": "FOREIGN KEY",
+          "references": "SWP_PROJECT_BUILD_REQUEST(PROJECT_REQUEST_ID)"
+        }
+      ]
+    },
+    "SWP_TEST_RESULT_STARS": {
+      "name": "SWP_TEST_RESULT_STARS",
+      "description": "STARS test result table",
+      "columns": [
+        {
+          "name": "BUILD_REQUEST_ID",
+          "type": "INT(11)",
+          "nullable": false,
+          "key": "PRIMARY KEY",
+          "description": "Build request ID"
+        },
+        {
+          "name": "RESULT_CD",
+          "type": "VARCHAR(20)",
+          "nullable": true,
+          "description": "Result code (RT_SUCCESS, RT_FAIL)"
+        },
+        {
+          "name": "PROGRESS_CD",
+          "type": "VARCHAR(20)",
+          "nullable": true,
+          "description": "Progress status code"
+        },
+        {
+          "name": "STARS_PROJECT_NAME",
+          "type": "VARCHAR(100)",
+          "nullable": true,
+          "description": "STARS project name"
+        },
+        {
+          "name": "TOOL_NAME",
+          "type": "VARCHAR(50)",
+          "nullable": true,
+          "description": "Tool name used for testing"
+        },
+        {
+          "name": "TC_NAME",
+          "type": "VARCHAR(100)",
+          "nullable": true,
+          "description": "Test case name"
+        },
+        {
+          "name": "PC_NAME",
+          "type": "VARCHAR(100)",
+          "nullable": true,
+          "description": "PC name where test was executed"
+        },
+        {
+          "name": "STARS_RESULT",
+          "type": "VARCHAR(50)",
+          "nullable": true,
+          "description": "Detailed STARS test result"
+        },
+        {
+          "name": "TIMEOUT_YN",
+          "type": "CHAR(1)",
+          "nullable": true,
+          "default": "N",
+          "description": "Indicates if test timed out (Y/N)"
+        },
+        {
+          "name": "RESULT_URL",
+          "type": "VARCHAR(255)",
+          "nullable": true,
+          "description": "URL to detailed test results"
+        },
+        {
+          "name": "MODIFIED_DATE",
+          "type": "DATETIME",
+          "nullable": false,
+          "description": "Last modification timestamp"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PK_TEST_RESULT_STARS",
+          "columns": ["BUILD_REQUEST_ID"],
+          "type": "PRIMARY"
+        },
+        {
+          "name": "FK_BUILD_REQUEST_ID",
+          "columns": ["BUILD_REQUEST_ID"],
+          "type": "FOREIGN KEY",
+          "references": "SWP_PROJECT_BUILD_REQUEST(PROJECT_REQUEST_ID)"
+        }
+      ]
+    },
+    "SWP_TEST_RESULT_DOBEE": {
+      "name": "SWP_TEST_RESULT_DOBEE",
+      "description": "DOBEE test result table",
+      "columns": [
+        {
+          "name": "BUILD_REQUEST_ID",
+          "type": "INT(11)",
+          "nullable": false,
+          "key": "PRIMARY KEY",
+          "description": "Build request ID"
+        },
+        {
+          "name": "RESULT_CD",
+          "type": "VARCHAR(20)",
+          "nullable": true,
+          "description": "Result code (RT_SUCCESS, RT_FAIL)"
+        },
+        {
+          "name": "MODIFIED_DATE",
+          "type": "DATETIME",
+          "nullable": false,
+          "description": "Last modification timestamp"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PK_TEST_RESULT_DOBEE",
+          "columns": ["BUILD_REQUEST_ID"],
+          "type": "PRIMARY"
+        },
+        {
+          "name": "FK_BUILD_REQUEST_ID",
+          "columns": ["BUILD_REQUEST_ID"],
+          "type": "FOREIGN KEY",
+          "references": "SWP_PROJECT_BUILD_REQUEST(PROJECT_REQUEST_ID)"
+        }
+      ]
+    },
+    "TN_CF_USER": {
+      "name": "TN_CF_USER",
+      "description": "User information table",
+      "columns": [
+        {
+          "name": "USER_ID",
+          "type": "INT(11)",
+          "nullable": false,
+          "key": "PRIMARY KEY",
+          "extra": "AUTO_INCREMENT",
+          "description": "Unique user ID"
+        },
+        {
+          "name": "USER_NAME",
+          "type": "VARCHAR(100)",
+          "nullable": false,
+          "description": "User name"
+        },
+        {
+          "name": "SINGLE_ID",
+          "type": "VARCHAR(50)",
+          "nullable": true,
+          "key": "UNIQUE",
+          "description": "Single user identifier"
+        },
+        {
+          "name": "EMAIL",
+          "type": "VARCHAR(100)",
+          "nullable": true,
+          "description": "User email"
+        },
+        {
+          "name": "STATUS",
+          "type": "VARCHAR(20)",
+          "nullable": true,
+          "description": "User status"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATETIME",
+          "nullable": false,
+          "description": "User creation timestamp"
+        },
+        {
+          "name": "MODIFIED_DATE",
+          "type": "DATETIME",
+          "nullable": false,
+          "description": "Last modification timestamp"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PK_USER",
+          "columns": ["USER_ID"],
+          "type": "PRIMARY"
+        },
+        {
+          "name": "UQ_SINGLE_ID",
+          "columns": ["SINGLE_ID"],
+          "type": "UNIQUE"
+        },
+        {
+          "name": "IDX_USER_NAME",
+          "columns": ["USER_NAME"],
+          "type": "INDEX"
+        }
+      ]
+    },
+    "SWP_ADM_PART_MEMBER": {
+      "name": "SWP_ADM_PART_MEMBER",
+      "description": "Department and role information table",
+      "columns": [
+        {
+          "name": "PART_NAME",
+          "type": "VARCHAR(100)",
+          "nullable": false,
+          "description": "Department name"
+        },
+        {
+          "name": "SINGLE_ID",
+          "type": "VARCHAR(50)",
+          "nullable": false,
+          "description": "Single user identifier"
+        },
+        {
+          "name": "USER_NAME",
+          "type": "VARCHAR(100)",
+          "nullable": true,
+          "description": "User name"
+        },
+        {
+          "name": "ROLE_NAME",
+          "type": "VARCHAR(20)",
+          "nullable": true,
+          "description": "Role name (TL, PL, NULL)"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATETIME",
+          "nullable": false,
+          "description": "Creation timestamp"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PK_PART_MEMBER",
+          "columns": ["PART_NAME", "SINGLE_ID"],
+          "type": "PRIMARY"
+        },
+        {
+          "name": "FK_SINGLE_ID",
+          "columns": ["SINGLE_ID"],
+          "type": "FOREIGN KEY",
+          "references": "TN_CF_USER(SINGLE_ID)"
+        },
+        {
+          "name": "IDX_ROLE",
+          "columns": ["ROLE_NAME"],
+          "type": "INDEX"
+        }
+      ]
+    },
+    "SWP_ADM_SYSTEM_OWNER": {
+      "name": "SWP_ADM_SYSTEM_OWNER",
+      "description": "System owner information table",
+      "columns": [
+        {
+          "name": "SYSTEM_NM",
+          "type": "VARCHAR(100)",
+          "nullable": false,
+          "description": "System name"
+        },
+        {
+          "name": "USER_ID",
+          "type": "INT(11)",
+          "nullable": false,
+          "description": "User ID"
+        },
+        {
+          "name": "REP_YN",
+          "type": "CHAR(1)",
+          "nullable": true,
+          "default": "N",
+          "description": "Representative flag (Y/N). If Y, USER_ID is the main representative for this system."
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATETIME",
+          "nullable": false,
+          "description": "Creation timestamp"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PK_SYSTEM_OWNER",
+          "columns": ["SYSTEM_NM", "USER_ID"],
+          "type": "PRIMARY"
+        },
+        {
+          "name": "FK_USER_ID",
+          "columns": ["USER_ID"],
+          "type": "FOREIGN KEY",
+          "references": "TN_CF_USER(USER_ID)"
+        },
+        {
+          "name": "IDX_REP_YN",
+          "columns": ["REP_YN"],
+          "type": "INDEX"
+        }
+      ],
+      "notes": "When REP_YN = 'Y', it means the user is the main representative for the specified system."
     }
   },
   "relationships": [
     {
-      "name": "fk_projects_owner",
-      "table": "projects",
-      "column": "owner_id",
-      "referenced_table": "users",
-      "referenced_column": "id"
+      "from_table": "SWP_PROJECT_MST",
+      "to_table": "SWP_PROJECT_MEMBER",
+      "type": "one-to-many",
+      "on_columns": "PROJECT_ID",
+      "notes": "A project can have multiple members"
     },
     {
-      "name": "fk_project_members_project",
-      "table": "project_members",
-      "column": "project_id",
-      "referenced_table": "projects",
-      "referenced_column": "id"
+      "from_table": "SWP_PROJECT_MST",
+      "to_table": "SWP_PROJECT_BUILD_PLAN",
+      "type": "one-to-many",
+      "on_columns": "PROJECT_ID",
+      "notes": "A project can have multiple build plans"
     },
     {
-      "name": "fk_project_members_user",
-      "table": "project_members",
-      "column": "user_id",
-      "referenced_table": "users",
-      "referenced_column": "id"
+      "from_table": "SWP_PROJECT_BUILD_PLAN",
+      "to_table": "SWP_PROJECT_BUILD_REQUEST",
+      "type": "one-to-many",
+      "on_columns": "PROJECT_PLAN_ID",
+      "notes": "A build plan can have multiple build requests"
     },
     {
-      "name": "fk_repositories_project",
-      "table": "repositories",
-      "column": "project_id",
-      "referenced_table": "projects",
-      "referenced_column": "id"
+      "from_table": "SWP_PROJECT_BUILD_REQUEST",
+      "to_table": "SWP_TEST_RESULT_BUILD",
+      "type": "one-to-one",
+      "on_columns": "PROJECT_REQUEST_ID = BUILD_REQUEST_ID",
+      "notes": "A build request has one build result"
     },
     {
-      "name": "fk_tasks_project",
-      "table": "tasks",
-      "column": "project_id",
-      "referenced_table": "projects",
-      "referenced_column": "id"
+      "from_table": "SWP_PROJECT_BUILD_REQUEST",
+      "to_table": "SWP_TEST_RESULT_SAM",
+      "type": "one-to-one",
+      "on_columns": "PROJECT_REQUEST_ID = BUILD_REQUEST_ID",
+      "notes": "A build request can have one SAM test result"
     },
     {
-      "name": "fk_tasks_assignee",
-      "table": "tasks",
-      "column": "assignee_id",
-      "referenced_table": "users",
-      "referenced_column": "id"
+      "from_table": "SWP_PROJECT_BUILD_REQUEST",
+      "to_table": "SWP_TEST_RESULT_COVERITY",
+      "type": "one-to-one",
+      "on_columns": "PROJECT_REQUEST_ID = BUILD_REQUEST_ID",
+      "notes": "A build request can have one Coverity test result"
     },
     {
-      "name": "fk_tasks_reporter",
-      "table": "tasks",
-      "column": "reporter_id",
-      "referenced_table": "users",
-      "referenced_column": "id"
+      "from_table": "SWP_PROJECT_BUILD_REQUEST",
+      "to_table": "SWP_TEST_RESULT_STARS",
+      "type": "one-to-one",
+      "on_columns": "PROJECT_REQUEST_ID = BUILD_REQUEST_ID",
+      "notes": "A build request can have one STARS test result"
     },
     {
-      "name": "fk_documents_project",
-      "table": "documents",
-      "column": "project_id",
-      "referenced_table": "projects",
-      "referenced_column": "id"
+      "from_table": "SWP_PROJECT_BUILD_REQUEST",
+      "to_table": "SWP_TEST_RESULT_DOBEE",
+      "type": "one-to-one",
+      "on_columns": "PROJECT_REQUEST_ID = BUILD_REQUEST_ID",
+      "notes": "A build request can have one DOBEE test result"
     },
     {
-      "name": "fk_documents_author",
-      "table": "documents",
-      "column": "author_id",
-      "referenced_table": "users",
-      "referenced_column": "id"
+      "from_table": "TN_CF_USER",
+      "to_table": "SWP_ADM_PART_MEMBER",
+      "type": "one-to-many",
+      "on_columns": "SINGLE_ID",
+      "notes": "A user can belong to multiple departments"
+    },
+    {
+      "from_table": "TN_CF_USER",
+      "to_table": "SWP_ADM_SYSTEM_OWNER",
+      "type": "one-to-many",
+      "on_columns": "USER_ID",
+      "notes": "A user can be an owner for multiple systems"
+    }
+  ],
+  "code_tables": {
+    "PROJECT_STATUS_CD": [
+      {"code": "S_ACTIVE", "description": "Active project"},
+      {"code": "S_INACTIVE", "description": "Inactive project"}
+    ],
+    "RESULT_CD": [
+      {"code": "RT_SUCCESS", "description": "Success result"},
+      {"code": "RT_FAIL", "description": "Failure result"}
+    ],
+    "BUILD_TYPE_CD": [
+      {"code": "BT_KPI", "description": "Development build/Layer build/KPI build (build for metrics)"},
+      {"code": "BT_RELEASE", "description": "Release build"}
+    ],
+    "ROLE_CODES": [
+      {"code": "TL", "description": "Team Leader/Project Leader"},
+      {"code": "PL", "description": "Group Leader"}
+    ],
+    "BUILD_SUB_TYPE": [
+      {"code": "FIL", "description": "FIL layer build"},
+      {"code": "HIL", "description": "HIL layer build"},
+      {"code": "rel", "description": "Release build"}
+    ],
+    "REP_YN": [
+      {"code": "Y", "description": "Main system representative"},
+      {"code": "N", "description": "Secondary system representative"}
+    ]
+  },
+  "common_queries": [
+    {
+      "description": "List all active projects",
+      "sql": "SELECT PROJECT_ID, PROJECT_NAME FROM SWP_PROJECT_MST WHERE PROJECT_STATUS_CD = 'S_ACTIVE'"
+    },
+    {
+      "description": "Calculate build success rate by project",
+      "sql": "SELECT p.PROJECT_NAME, COUNT(CASE WHEN b.RESULT_CD = 'RT_SUCCESS' THEN 1 END) * 100.0 / COUNT(*) AS success_rate FROM SWP_PROJECT_MST p JOIN SWP_PROJECT_BUILD_PLAN bp ON p.PROJECT_ID = bp.PROJECT_ID JOIN SWP_PROJECT_BUILD_REQUEST br ON bp.PROJECT_PLAN_ID = br.PROJECT_PLAN_ID JOIN SWP_TEST_RESULT_BUILD b ON br.PROJECT_REQUEST_ID = b.BUILD_REQUEST_ID GROUP BY p.PROJECT_NAME"
+    },
+    {
+      "description": "Show SAM scores for all active projects",
+      "sql": "SELECT p.PROJECT_NAME, s.SCORE FROM SWP_PROJECT_MST p JOIN SWP_PROJECT_BUILD_PLAN bp ON p.PROJECT_ID = bp.PROJECT_ID JOIN SWP_PROJECT_BUILD_REQUEST br ON bp.PROJECT_PLAN_ID = br.PROJECT_PLAN_ID JOIN SWP_TEST_RESULT_SAM s ON br.PROJECT_REQUEST_ID = s.BUILD_REQUEST_ID WHERE p.PROJECT_STATUS_CD = 'S_ACTIVE' ORDER BY s.SCORE DESC"
+    },
+    {
+      "description": "Find systems and their main representatives",
+      "sql": "SELECT so.SYSTEM_NM, u.USER_NAME, u.EMAIL FROM SWP_ADM_SYSTEM_OWNER so JOIN TN_CF_USER u ON so.USER_ID = u.USER_ID WHERE so.REP_YN = 'Y'"
     }
   ]
 }
