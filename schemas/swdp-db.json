@@ -1,0 +1,678 @@
+{
+  "tables": {
+    "projects": {
+      "name": "projects",
+      "columns": [
+        {
+          "name": "id",
+          "type": "int",
+          "length": null,
+          "nullable": false,
+          "key": "PRI",
+          "extra": "auto_increment",
+          "comment": "Project ID"
+        },
+        {
+          "name": "name",
+          "type": "varchar",
+          "length": 255,
+          "nullable": false,
+          "key": "",
+          "extra": "",
+          "comment": "Project name"
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "length": null,
+          "nullable": true,
+          "key": "",
+          "extra": "",
+          "comment": "Project description"
+        },
+        {
+          "name": "status",
+          "type": "enum",
+          "length": "'active','archived','draft'",
+          "nullable": false,
+          "key": "",
+          "extra": "",
+          "comment": "Project status"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "length": null,
+          "nullable": false,
+          "key": "",
+          "extra": "DEFAULT_GENERATED",
+          "comment": "Creation timestamp"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp",
+          "length": null,
+          "nullable": true,
+          "key": "",
+          "extra": "DEFAULT_GENERATED ON UPDATE CURRENT_TIMESTAMP",
+          "comment": "Last update timestamp"
+        },
+        {
+          "name": "owner_id",
+          "type": "int",
+          "length": null,
+          "nullable": false,
+          "key": "MUL",
+          "extra": "",
+          "comment": "Project owner user ID"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": ["id"]
+        },
+        {
+          "name": "project_name_idx",
+          "unique": true,
+          "columns": ["name"]
+        },
+        {
+          "name": "owner_id_idx",
+          "unique": false,
+          "columns": ["owner_id"]
+        }
+      ]
+    },
+    "users": {
+      "name": "users",
+      "columns": [
+        {
+          "name": "id",
+          "type": "int",
+          "length": null,
+          "nullable": false,
+          "key": "PRI",
+          "extra": "auto_increment",
+          "comment": "User ID"
+        },
+        {
+          "name": "username",
+          "type": "varchar",
+          "length": 50,
+          "nullable": false,
+          "key": "UNI",
+          "extra": "",
+          "comment": "Username"
+        },
+        {
+          "name": "email",
+          "type": "varchar",
+          "length": 255,
+          "nullable": false,
+          "key": "UNI",
+          "extra": "",
+          "comment": "Email address"
+        },
+        {
+          "name": "name",
+          "type": "varchar",
+          "length": 255,
+          "nullable": false,
+          "key": "",
+          "extra": "",
+          "comment": "Full name"
+        },
+        {
+          "name": "role",
+          "type": "enum",
+          "length": "'admin','user','guest'",
+          "nullable": false,
+          "key": "",
+          "extra": "",
+          "comment": "User role"
+        },
+        {
+          "name": "status",
+          "type": "enum",
+          "length": "'active','inactive','suspended'",
+          "nullable": false,
+          "key": "",
+          "extra": "",
+          "comment": "User status"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "length": null,
+          "nullable": false,
+          "key": "",
+          "extra": "DEFAULT_GENERATED",
+          "comment": "Creation timestamp"
+        },
+        {
+          "name": "last_login",
+          "type": "timestamp",
+          "length": null,
+          "nullable": true,
+          "key": "",
+          "extra": "",
+          "comment": "Last login timestamp"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": ["id"]
+        },
+        {
+          "name": "username_idx",
+          "unique": true,
+          "columns": ["username"]
+        },
+        {
+          "name": "email_idx",
+          "unique": true,
+          "columns": ["email"]
+        }
+      ]
+    },
+    "project_members": {
+      "name": "project_members",
+      "columns": [
+        {
+          "name": "project_id",
+          "type": "int",
+          "length": null,
+          "nullable": false,
+          "key": "PRI",
+          "extra": "",
+          "comment": "Project ID"
+        },
+        {
+          "name": "user_id",
+          "type": "int",
+          "length": null,
+          "nullable": false,
+          "key": "PRI",
+          "extra": "",
+          "comment": "User ID"
+        },
+        {
+          "name": "role",
+          "type": "enum",
+          "length": "'owner','maintainer','developer','guest'",
+          "nullable": false,
+          "key": "",
+          "extra": "",
+          "comment": "Member role in project"
+        },
+        {
+          "name": "joined_at",
+          "type": "timestamp",
+          "length": null,
+          "nullable": false,
+          "key": "",
+          "extra": "DEFAULT_GENERATED",
+          "comment": "Joined timestamp"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": ["project_id", "user_id"]
+        },
+        {
+          "name": "project_id_idx",
+          "unique": false,
+          "columns": ["project_id"]
+        },
+        {
+          "name": "user_id_idx",
+          "unique": false,
+          "columns": ["user_id"]
+        }
+      ]
+    },
+    "repositories": {
+      "name": "repositories",
+      "columns": [
+        {
+          "name": "id",
+          "type": "int",
+          "length": null,
+          "nullable": false,
+          "key": "PRI",
+          "extra": "auto_increment",
+          "comment": "Repository ID"
+        },
+        {
+          "name": "project_id",
+          "type": "int",
+          "length": null,
+          "nullable": false,
+          "key": "MUL",
+          "extra": "",
+          "comment": "Project ID"
+        },
+        {
+          "name": "name",
+          "type": "varchar",
+          "length": 255,
+          "nullable": false,
+          "key": "",
+          "extra": "",
+          "comment": "Repository name"
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "length": null,
+          "nullable": true,
+          "key": "",
+          "extra": "",
+          "comment": "Repository description"
+        },
+        {
+          "name": "url",
+          "type": "varchar",
+          "length": 255,
+          "nullable": false,
+          "key": "",
+          "extra": "",
+          "comment": "Repository URL"
+        },
+        {
+          "name": "type",
+          "type": "enum",
+          "length": "'git','svn'",
+          "nullable": false,
+          "key": "",
+          "extra": "",
+          "comment": "Repository type"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "length": null,
+          "nullable": false,
+          "key": "",
+          "extra": "DEFAULT_GENERATED",
+          "comment": "Creation timestamp"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp",
+          "length": null,
+          "nullable": true,
+          "key": "",
+          "extra": "DEFAULT_GENERATED ON UPDATE CURRENT_TIMESTAMP",
+          "comment": "Last update timestamp"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": ["id"]
+        },
+        {
+          "name": "project_repo_name_idx",
+          "unique": true,
+          "columns": ["project_id", "name"]
+        },
+        {
+          "name": "project_id_idx",
+          "unique": false,
+          "columns": ["project_id"]
+        }
+      ]
+    },
+    "tasks": {
+      "name": "tasks",
+      "columns": [
+        {
+          "name": "id",
+          "type": "int",
+          "length": null,
+          "nullable": false,
+          "key": "PRI",
+          "extra": "auto_increment",
+          "comment": "Task ID"
+        },
+        {
+          "name": "project_id",
+          "type": "int",
+          "length": null,
+          "nullable": false,
+          "key": "MUL",
+          "extra": "",
+          "comment": "Project ID"
+        },
+        {
+          "name": "title",
+          "type": "varchar",
+          "length": 255,
+          "nullable": false,
+          "key": "",
+          "extra": "",
+          "comment": "Task title"
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "length": null,
+          "nullable": true,
+          "key": "",
+          "extra": "",
+          "comment": "Task description"
+        },
+        {
+          "name": "status",
+          "type": "enum",
+          "length": "'open','in_progress','review','closed'",
+          "nullable": false,
+          "key": "",
+          "extra": "",
+          "comment": "Task status"
+        },
+        {
+          "name": "priority",
+          "type": "enum",
+          "length": "'low','medium','high','critical'",
+          "nullable": false,
+          "key": "",
+          "extra": "",
+          "comment": "Task priority"
+        },
+        {
+          "name": "assignee_id",
+          "type": "int",
+          "length": null,
+          "nullable": true,
+          "key": "MUL",
+          "extra": "",
+          "comment": "Assignee user ID"
+        },
+        {
+          "name": "reporter_id",
+          "type": "int",
+          "length": null,
+          "nullable": false,
+          "key": "MUL",
+          "extra": "",
+          "comment": "Reporter user ID"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "length": null,
+          "nullable": false,
+          "key": "",
+          "extra": "DEFAULT_GENERATED",
+          "comment": "Creation timestamp"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp",
+          "length": null,
+          "nullable": true,
+          "key": "",
+          "extra": "DEFAULT_GENERATED ON UPDATE CURRENT_TIMESTAMP",
+          "comment": "Last update timestamp"
+        },
+        {
+          "name": "due_date",
+          "type": "date",
+          "length": null,
+          "nullable": true,
+          "key": "",
+          "extra": "",
+          "comment": "Due date"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": ["id"]
+        },
+        {
+          "name": "project_id_idx",
+          "unique": false,
+          "columns": ["project_id"]
+        },
+        {
+          "name": "assignee_id_idx",
+          "unique": false,
+          "columns": ["assignee_id"]
+        },
+        {
+          "name": "reporter_id_idx",
+          "unique": false,
+          "columns": ["reporter_id"]
+        }
+      ]
+    },
+    "documents": {
+      "name": "documents",
+      "columns": [
+        {
+          "name": "id",
+          "type": "int",
+          "length": null,
+          "nullable": false,
+          "key": "PRI",
+          "extra": "auto_increment",
+          "comment": "Document ID"
+        },
+        {
+          "name": "project_id",
+          "type": "int",
+          "length": null,
+          "nullable": false,
+          "key": "MUL",
+          "extra": "",
+          "comment": "Project ID"
+        },
+        {
+          "name": "title",
+          "type": "varchar",
+          "length": 255,
+          "nullable": false,
+          "key": "",
+          "extra": "",
+          "comment": "Document title"
+        },
+        {
+          "name": "content",
+          "type": "text",
+          "length": null,
+          "nullable": true,
+          "key": "",
+          "extra": "",
+          "comment": "Document content"
+        },
+        {
+          "name": "author_id",
+          "type": "int",
+          "length": null,
+          "nullable": false,
+          "key": "MUL",
+          "extra": "",
+          "comment": "Author user ID"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "length": null,
+          "nullable": false,
+          "key": "",
+          "extra": "DEFAULT_GENERATED",
+          "comment": "Creation timestamp"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp",
+          "length": null,
+          "nullable": true,
+          "key": "",
+          "extra": "DEFAULT_GENERATED ON UPDATE CURRENT_TIMESTAMP",
+          "comment": "Last update timestamp"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": ["id"]
+        },
+        {
+          "name": "project_title_idx",
+          "unique": true,
+          "columns": ["project_id", "title"]
+        },
+        {
+          "name": "project_id_idx",
+          "unique": false,
+          "columns": ["project_id"]
+        },
+        {
+          "name": "author_id_idx",
+          "unique": false,
+          "columns": ["author_id"]
+        }
+      ]
+    }
+  },
+  "views": {
+    "project_activities": {
+      "name": "project_activities",
+      "query": "SELECT p.id AS project_id, p.name AS project_name, 'task' AS activity_type, t.id AS activity_id, t.title AS activity_title, t.created_at AS activity_time, u.name AS user_name FROM projects p JOIN tasks t ON p.id = t.project_id JOIN users u ON t.reporter_id = u.id UNION SELECT p.id AS project_id, p.name AS project_name, 'document' AS activity_type, d.id AS activity_id, d.title AS activity_title, d.created_at AS activity_time, u.name AS user_name FROM projects p JOIN documents d ON p.id = d.project_id JOIN users u ON d.author_id = u.id ORDER BY activity_time DESC",
+      "columns": [
+        {
+          "name": "project_id",
+          "type": "int"
+        },
+        {
+          "name": "project_name",
+          "type": "varchar"
+        },
+        {
+          "name": "activity_type",
+          "type": "varchar"
+        },
+        {
+          "name": "activity_id",
+          "type": "int"
+        },
+        {
+          "name": "activity_title",
+          "type": "varchar"
+        },
+        {
+          "name": "activity_time",
+          "type": "timestamp"
+        },
+        {
+          "name": "user_name",
+          "type": "varchar"
+        }
+      ]
+    },
+    "user_assignments": {
+      "name": "user_assignments",
+      "query": "SELECT u.id AS user_id, u.name AS user_name, p.id AS project_id, p.name AS project_name, COUNT(t.id) AS task_count FROM users u JOIN project_members pm ON u.id = pm.user_id JOIN projects p ON pm.project_id = p.id LEFT JOIN tasks t ON p.id = t.project_id AND t.assignee_id = u.id AND t.status != 'closed' GROUP BY u.id, p.id ORDER BY u.name, p.name",
+      "columns": [
+        {
+          "name": "user_id",
+          "type": "int"
+        },
+        {
+          "name": "user_name",
+          "type": "varchar"
+        },
+        {
+          "name": "project_id",
+          "type": "int"
+        },
+        {
+          "name": "project_name",
+          "type": "varchar"
+        },
+        {
+          "name": "task_count",
+          "type": "bigint"
+        }
+      ]
+    }
+  },
+  "relationships": [
+    {
+      "name": "fk_projects_owner",
+      "table": "projects",
+      "column": "owner_id",
+      "referenced_table": "users",
+      "referenced_column": "id"
+    },
+    {
+      "name": "fk_project_members_project",
+      "table": "project_members",
+      "column": "project_id",
+      "referenced_table": "projects",
+      "referenced_column": "id"
+    },
+    {
+      "name": "fk_project_members_user",
+      "table": "project_members",
+      "column": "user_id",
+      "referenced_table": "users",
+      "referenced_column": "id"
+    },
+    {
+      "name": "fk_repositories_project",
+      "table": "repositories",
+      "column": "project_id",
+      "referenced_table": "projects",
+      "referenced_column": "id"
+    },
+    {
+      "name": "fk_tasks_project",
+      "table": "tasks",
+      "column": "project_id",
+      "referenced_table": "projects",
+      "referenced_column": "id"
+    },
+    {
+      "name": "fk_tasks_assignee",
+      "table": "tasks",
+      "column": "assignee_id",
+      "referenced_table": "users",
+      "referenced_column": "id"
+    },
+    {
+      "name": "fk_tasks_reporter",
+      "table": "tasks",
+      "column": "reporter_id",
+      "referenced_table": "users",
+      "referenced_column": "id"
+    },
+    {
+      "name": "fk_documents_project",
+      "table": "documents",
+      "column": "project_id",
+      "referenced_table": "projects",
+      "referenced_column": "id"
+    },
+    {
+      "name": "fk_documents_author",
+      "table": "documents",
+      "column": "author_id",
+      "referenced_table": "users",
+      "referenced_column": "id"
+    }
+  ]
+}

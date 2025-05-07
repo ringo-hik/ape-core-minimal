@@ -1,0 +1,130 @@
+{
+  "schema": {
+    "issue": {
+      "properties": {
+        "id": {"type": "string"},
+        "key": {"type": "string"},
+        "self": {"type": "string"},
+        "fields": {
+          "type": "object",
+          "properties": {
+            "summary": {"type": "string"},
+            "description": {"type": "string"},
+            "issuetype": {
+              "type": "object",
+              "properties": {
+                "id": {"type": "string"},
+                "name": {"type": "string"},
+                "description": {"type": "string"}
+              }
+            },
+            "priority": {
+              "type": "object",
+              "properties": {
+                "id": {"type": "string"},
+                "name": {"type": "string"}
+              }
+            },
+            "status": {
+              "type": "object",
+              "properties": {
+                "id": {"type": "string"},
+                "name": {"type": "string"},
+                "description": {"type": "string"}
+              }
+            },
+            "assignee": {
+              "type": "object",
+              "properties": {
+                "displayName": {"type": "string"},
+                "emailAddress": {"type": "string"},
+                "name": {"type": "string"}
+              }
+            },
+            "reporter": {
+              "type": "object",
+              "properties": {
+                "displayName": {"type": "string"},
+                "emailAddress": {"type": "string"},
+                "name": {"type": "string"}
+              }
+            },
+            "created": {"type": "string", "format": "date-time"},
+            "updated": {"type": "string", "format": "date-time"},
+            "labels": {
+              "type": "array",
+              "items": {"type": "string"}
+            },
+            "project": {
+              "type": "object",
+              "properties": {
+                "id": {"type": "string"},
+                "key": {"type": "string"},
+                "name": {"type": "string"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "project": {
+      "properties": {
+        "id": {"type": "string"},
+        "key": {"type": "string"},
+        "name": {"type": "string"},
+        "description": {"type": "string"},
+        "lead": {
+          "type": "object",
+          "properties": {
+            "displayName": {"type": "string"},
+            "name": {"type": "string"}
+          }
+        }
+      }
+    },
+    "user": {
+      "properties": {
+        "name": {"type": "string"},
+        "displayName": {"type": "string"},
+        "emailAddress": {"type": "string"},
+        "active": {"type": "boolean"}
+      }
+    },
+    "comment": {
+      "properties": {
+        "id": {"type": "string"},
+        "author": {
+          "type": "object",
+          "properties": {
+            "displayName": {"type": "string"},
+            "name": {"type": "string"}
+          }
+        },
+        "body": {"type": "string"},
+        "created": {"type": "string", "format": "date-time"},
+        "updated": {"type": "string", "format": "date-time"}
+      }
+    }
+  },
+  "endpoints": {
+    "issues": {
+      "get": "/rest/api/2/issue/{issueIdOrKey}",
+      "create": "/rest/api/2/issue",
+      "update": "/rest/api/2/issue/{issueIdOrKey}",
+      "search": "/rest/api/2/search"
+    },
+    "projects": {
+      "get": "/rest/api/2/project/{projectIdOrKey}",
+      "list": "/rest/api/2/project"
+    },
+    "comments": {
+      "get": "/rest/api/2/issue/{issueIdOrKey}/comment/{id}",
+      "create": "/rest/api/2/issue/{issueIdOrKey}/comment",
+      "update": "/rest/api/2/issue/{issueIdOrKey}/comment/{id}"
+    },
+    "users": {
+      "get": "/rest/api/2/user",
+      "search": "/rest/api/2/user/search"
+    }
+  }
+}

@@ -1,0 +1,252 @@
+{
+  "schema": {
+    "repository": {
+      "properties": {
+        "slug": {"type": "string"},
+        "id": {"type": "integer"},
+        "name": {"type": "string"},
+        "scmId": {"type": "string"},
+        "state": {"type": "string"},
+        "statusMessage": {"type": "string"},
+        "forkable": {"type": "boolean"},
+        "project": {
+          "type": "object",
+          "properties": {
+            "key": {"type": "string"},
+            "id": {"type": "integer"},
+            "name": {"type": "string"},
+            "description": {"type": "string"},
+            "public": {"type": "boolean"},
+            "type": {"type": "string"}
+          }
+        },
+        "public": {"type": "boolean"},
+        "links": {
+          "type": "object",
+          "properties": {
+            "clone": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "href": {"type": "string"},
+                  "name": {"type": "string"}
+                }
+              }
+            },
+            "self": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "href": {"type": "string"}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "project": {
+      "properties": {
+        "key": {"type": "string"},
+        "id": {"type": "integer"},
+        "name": {"type": "string"},
+        "description": {"type": "string"},
+        "public": {"type": "boolean"},
+        "type": {"type": "string"},
+        "links": {
+          "type": "object",
+          "properties": {
+            "self": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "href": {"type": "string"}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "pullRequest": {
+      "properties": {
+        "id": {"type": "integer"},
+        "version": {"type": "integer"},
+        "title": {"type": "string"},
+        "description": {"type": "string"},
+        "state": {"type": "string"},
+        "open": {"type": "boolean"},
+        "closed": {"type": "boolean"},
+        "createdDate": {"type": "integer"},
+        "updatedDate": {"type": "integer"},
+        "fromRef": {
+          "type": "object",
+          "properties": {
+            "id": {"type": "string"},
+            "displayId": {"type": "string"},
+            "latestCommit": {"type": "string"},
+            "repository": {"$ref": "#/schema/repository"}
+          }
+        },
+        "toRef": {
+          "type": "object",
+          "properties": {
+            "id": {"type": "string"},
+            "displayId": {"type": "string"},
+            "latestCommit": {"type": "string"},
+            "repository": {"$ref": "#/schema/repository"}
+          }
+        },
+        "locked": {"type": "boolean"},
+        "author": {
+          "type": "object",
+          "properties": {
+            "user": {
+              "type": "object",
+              "properties": {
+                "name": {"type": "string"},
+                "emailAddress": {"type": "string"},
+                "id": {"type": "integer"},
+                "displayName": {"type": "string"},
+                "active": {"type": "boolean"},
+                "slug": {"type": "string"},
+                "type": {"type": "string"}
+              }
+            },
+            "role": {"type": "string"},
+            "approved": {"type": "boolean"},
+            "status": {"type": "string"}
+          }
+        },
+        "reviewers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "user": {
+                "type": "object",
+                "properties": {
+                  "name": {"type": "string"},
+                  "emailAddress": {"type": "string"},
+                  "id": {"type": "integer"},
+                  "displayName": {"type": "string"},
+                  "active": {"type": "boolean"},
+                  "slug": {"type": "string"},
+                  "type": {"type": "string"}
+                }
+              },
+              "role": {"type": "string"},
+              "approved": {"type": "boolean"},
+              "status": {"type": "string"}
+            }
+          }
+        },
+        "participants": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "user": {
+                "type": "object",
+                "properties": {
+                  "name": {"type": "string"},
+                  "emailAddress": {"type": "string"},
+                  "id": {"type": "integer"},
+                  "displayName": {"type": "string"},
+                  "active": {"type": "boolean"},
+                  "slug": {"type": "string"},
+                  "type": {"type": "string"}
+                }
+              },
+              "role": {"type": "string"},
+              "approved": {"type": "boolean"},
+              "status": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
+    "commit": {
+      "properties": {
+        "id": {"type": "string"},
+        "displayId": {"type": "string"},
+        "author": {
+          "type": "object",
+          "properties": {
+            "name": {"type": "string"},
+            "emailAddress": {"type": "string"},
+            "id": {"type": "integer"},
+            "displayName": {"type": "string"},
+            "active": {"type": "boolean"},
+            "slug": {"type": "string"},
+            "type": {"type": "string"}
+          }
+        },
+        "authorTimestamp": {"type": "integer"},
+        "committer": {
+          "type": "object",
+          "properties": {
+            "name": {"type": "string"},
+            "emailAddress": {"type": "string"},
+            "id": {"type": "integer"},
+            "displayName": {"type": "string"},
+            "active": {"type": "boolean"},
+            "slug": {"type": "string"},
+            "type": {"type": "string"}
+          }
+        },
+        "committerTimestamp": {"type": "integer"},
+        "message": {"type": "string"},
+        "parents": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {"type": "string"},
+              "displayId": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
+    "branch": {
+      "properties": {
+        "id": {"type": "string"},
+        "displayId": {"type": "string"},
+        "type": {"type": "string"},
+        "latestCommit": {"type": "string"},
+        "latestChangeset": {"type": "string"},
+        "isDefault": {"type": "boolean"}
+      }
+    }
+  },
+  "endpoints": {
+    "projects": {
+      "list": "/rest/api/1.0/projects",
+      "get": "/rest/api/1.0/projects/{projectKey}"
+    },
+    "repositories": {
+      "list": "/rest/api/1.0/projects/{projectKey}/repos",
+      "get": "/rest/api/1.0/projects/{projectKey}/repos/{repositorySlug}"
+    },
+    "pullRequests": {
+      "list": "/rest/api/1.0/projects/{projectKey}/repos/{repositorySlug}/pull-requests",
+      "get": "/rest/api/1.0/projects/{projectKey}/repos/{repositorySlug}/pull-requests/{pullRequestId}",
+      "create": "/rest/api/1.0/projects/{projectKey}/repos/{repositorySlug}/pull-requests"
+    },
+    "branches": {
+      "list": "/rest/api/1.0/projects/{projectKey}/repos/{repositorySlug}/branches"
+    },
+    "commits": {
+      "list": "/rest/api/1.0/projects/{projectKey}/repos/{repositorySlug}/commits",
+      "get": "/rest/api/1.0/projects/{projectKey}/repos/{repositorySlug}/commits/{commitId}"
+    },
+    "files": {
+      "browse": "/rest/api/1.0/projects/{projectKey}/repos/{repositorySlug}/browse",
+      "content": "/rest/api/1.0/projects/{projectKey}/repos/{repositorySlug}/raw/{path}"
+    }
+  }
+}

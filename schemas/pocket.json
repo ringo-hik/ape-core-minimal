@@ -1,0 +1,126 @@
+{
+  "schema": {
+    "bucket": {
+      "properties": {
+        "Name": {"type": "string"},
+        "CreationDate": {"type": "string", "format": "date-time"}
+      }
+    },
+    "object": {
+      "properties": {
+        "Key": {"type": "string"},
+        "LastModified": {"type": "string", "format": "date-time"},
+        "ETag": {"type": "string"},
+        "Size": {"type": "integer"},
+        "StorageClass": {"type": "string"},
+        "Owner": {
+          "type": "object",
+          "properties": {
+            "DisplayName": {"type": "string"},
+            "ID": {"type": "string"}
+          }
+        }
+      }
+    },
+    "objectMetadata": {
+      "properties": {
+        "Key": {"type": "string"},
+        "ETag": {"type": "string"},
+        "ContentType": {"type": "string"},
+        "ContentLength": {"type": "integer"},
+        "LastModified": {"type": "string", "format": "date-time"},
+        "Metadata": {"type": "object"}
+      }
+    }
+  },
+  "operations": {
+    "buckets": {
+      "list": {
+        "method": "GET",
+        "path": "/",
+        "description": "List all buckets"
+      },
+      "create": {
+        "method": "PUT",
+        "path": "/{bucket}",
+        "description": "Create a new bucket",
+        "parameters": {
+          "bucket": {"type": "string", "required": true, "description": "Bucket name"}
+        }
+      },
+      "delete": {
+        "method": "DELETE",
+        "path": "/{bucket}",
+        "description": "Delete a bucket",
+        "parameters": {
+          "bucket": {"type": "string", "required": true, "description": "Bucket name"}
+        }
+      }
+    },
+    "objects": {
+      "list": {
+        "method": "GET",
+        "path": "/{bucket}",
+        "description": "List objects in a bucket",
+        "parameters": {
+          "bucket": {"type": "string", "required": true, "description": "Bucket name"},
+          "prefix": {"type": "string", "description": "Filter by prefix"},
+          "max-keys": {"type": "integer", "description": "Maximum number of keys to return"}
+        }
+      },
+      "get": {
+        "method": "GET",
+        "path": "/{bucket}/{key}",
+        "description": "Get an object",
+        "parameters": {
+          "bucket": {"type": "string", "required": true, "description": "Bucket name"},
+          "key": {"type": "string", "required": true, "description": "Object key"},
+          "versionId": {"type": "string", "description": "Version ID"}
+        }
+      },
+      "put": {
+        "method": "PUT",
+        "path": "/{bucket}/{key}",
+        "description": "Upload an object",
+        "parameters": {
+          "bucket": {"type": "string", "required": true, "description": "Bucket name"},
+          "key": {"type": "string", "required": true, "description": "Object key"},
+          "content-type": {"type": "string", "description": "Content type"},
+          "metadata": {"type": "object", "description": "Object metadata"}
+        }
+      },
+      "delete": {
+        "method": "DELETE",
+        "path": "/{bucket}/{key}",
+        "description": "Delete an object",
+        "parameters": {
+          "bucket": {"type": "string", "required": true, "description": "Bucket name"},
+          "key": {"type": "string", "required": true, "description": "Object key"},
+          "versionId": {"type": "string", "description": "Version ID"}
+        }
+      },
+      "head": {
+        "method": "HEAD",
+        "path": "/{bucket}/{key}",
+        "description": "Get object metadata",
+        "parameters": {
+          "bucket": {"type": "string", "required": true, "description": "Bucket name"},
+          "key": {"type": "string", "required": true, "description": "Object key"},
+          "versionId": {"type": "string", "description": "Version ID"}
+        }
+      }
+    }
+  },
+  "metadata": {
+    "contentTypes": {
+      "text/plain": {"extension": "txt"},
+      "application/json": {"extension": "json"},
+      "application/xml": {"extension": "xml"},
+      "text/html": {"extension": "html"},
+      "image/jpeg": {"extension": "jpg"},
+      "image/png": {"extension": "png"},
+      "application/pdf": {"extension": "pdf"},
+      "application/octet-stream": {"extension": "bin"}
+    }
+  }
+}
