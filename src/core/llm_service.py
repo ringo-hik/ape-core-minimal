@@ -17,6 +17,7 @@ class LLMModel:
     CLAUDE_INSTANT = "claude-3-haiku-20240307"
     QWEN = "qwen:72b"
     GPT35 = "gpt-3.5-turbo"
+    LLAMA4 = "meta-llama/llama-4-maverick"
 
 class MessageRole:
     """Message roles in a conversation"""
@@ -35,8 +36,8 @@ class LLMService:
         """Load configuration from environment variables"""
         # Load from environment variables
         self.endpoint = os.environ.get("APE_LLM_ENDPOINT", "http://localhost:8000/api/chat")
-        self.default_model = os.environ.get("DEFAULT_MODEL", LLMModel.CLAUDE)
-        self.api_key = os.environ.get("APE_OPENROUTER_API_KEY", "dummy-api-key")
+        self.default_model = os.environ.get("DEFAULT_MODEL", LLMModel.LLAMA4)
+        self.api_key = os.environ.get("APE_OPENROUTER_API_KEY", "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")
         self.anthropic_key = os.environ.get("APE_ANTHROPIC_API_KEY", "dummy-anthropic-key")
     
     def get_active_model(self) -> str:
@@ -49,7 +50,7 @@ class LLMService:
     
     def get_available_models(self) -> List[str]:
         """Get all available LLM models"""
-        return [LLMModel.CLAUDE, LLMModel.CLAUDE_INSTANT]
+        return [LLMModel.CLAUDE, LLMModel.CLAUDE_INSTANT, LLMModel.LLAMA4, LLMModel.QWEN, LLMModel.GPT35]
     
     def send_request(
         self,

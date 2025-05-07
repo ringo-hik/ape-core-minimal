@@ -36,9 +36,12 @@ def test_llm_service():
     print("Testing LLM service...")
     
     # API 키는 .env 파일이나 환경 변수에서 불러와야 합니다
-    # 테스트 목적으로 이미 환경 변수에 설정되어 있지 않은 경우에만 기본값을 사용합니다
+    # 테스트용 기본 API 키 설정
     if "APE_OPENROUTER_API_KEY" not in os.environ:
-        os.environ["APE_OPENROUTER_API_KEY"] = "YOUR_OPENROUTER_API_KEY_HERE"
+        os.environ["APE_OPENROUTER_API_KEY"] = "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"
+    
+    # 기본 모델을 Llama4로 설정
+    os.environ["DEFAULT_MODEL"] = "meta-llama/llama-4-maverick"
     
     # Initialize LLM service
     llm_service = LLMService()
@@ -58,7 +61,7 @@ def test_llm_service():
                 "X-Title": "APE Test"
             },
             json={
-                "model": "qwen:72b",
+                "model": "meta-llama/llama-4-maverick",
                 "messages": [{"role": "user", "content": "What is the capital of France?"}]
             }
         )
