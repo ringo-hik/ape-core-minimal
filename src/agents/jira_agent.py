@@ -19,6 +19,8 @@ class JiraAgent(ServiceAgent):
         self.api_token = os.environ.get("APE_JIRA_API_TOKEN", "dummy-jira-token")
         self.username = os.environ.get("APE_JIRA_USERNAME", "jira-user")
         self.project_key = os.environ.get("APE_JIRA_PROJECT_KEY", "APE")
+        
+        # 이미 이메일 형식이므로 그대로 사용
         self.auth = (self.username, self.api_token)
         self.headers = {
             "Content-Type": "application/json",
@@ -43,14 +45,18 @@ class JiraAgent(ServiceAgent):
         if action == "get_issue":
             return self.get_issue(request.get("issue_key", ""))
         elif action == "create_issue":
-            return self.create_issue(
-                request.get("summary", ""),
-                request.get("description", ""),
-                request.get("issue_type", "Task"),
-                request.get("priority", "Medium"),
-                request.get("labels", []),
-                request.get("components", [])
-            )
+            # 직접 필드가 제공되면 사용하고, 그렇지 않으면 개별 값 사용
+            if "fields" in request:
+                return self.create_issue_with_fields(request.get("fields", {}))
+            else:
+                return self.create_issue(
+                    request.get("summary", ""),
+                    request.get("description", ""),
+                    request.get("issue_type", "Task"),
+                    request.get("priority", "Medium"),
+                    request.get("labels", []),
+                    request.get("components", [])
+                )
         elif action == "update_issue":
             return self.update_issue(
                 request.get("issue_key", ""),
@@ -122,14 +128,23 @@ class JiraAgent(ServiceAgent):
             True if authentication was successful, False otherwise
         """
         try:
+            print(f"Authenticating with Jira using email: {self.username}")
+            url = f"{self.base_url}/rest/api/2/myself"
+            print(f"Auth URL: {url}")
+            
             response = requests.get(
-                f"{self.base_url}/rest/api/2/myself",
+                url,
                 auth=self.auth,
                 headers=self.headers
             )
             
+            print(f"Authentication response status: {response.status_code}")
+            if response.status_code != 200:
+                print(f"Authentication error: {response.text}")
+            
             return response.status_code == 200
-        except Exception:
+        except Exception as e:
+            print(f"Authentication exception: {str(e)}")
             return False
     
     def get_service_info(self) -> Dict[str, Any]:
@@ -265,6 +280,42 @@ class JiraAgent(ServiceAgent):
         except Exception as e:
             return {"success": False, "error": str(e)}
     
+    def create_issue_with_fields(self, fields: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Create a new Jira issue with custom fields
+        
+        Args:
+            fields: Fields to use for the issue
+            
+        Returns:
+            Created issue data
+        """
+        try:
+            payload = {"fields": fields}
+            
+            # 디버깅을 위한 로그
+            print(f"Create issue payload (custom fields): {json.dumps(payload, indent=2)}")
+            
+            response = requests.post(
+                f"{self.base_url}/rest/api/2/issue",
+                auth=self.auth,
+                headers=self.headers,
+                data=json.dumps(payload)
+            )
+            
+            print(f"Create issue response status: {response.status_code}")
+            if response.status_code in [200, 201]:
+                return {"success": True, "data": response.json()}
+            else:
+                try:
+                    error_detail = response.json()
+                    print(f"Error details: {json.dumps(error_detail, indent=2)}")
+                    return {"success": False, "error": f"Failed to create issue: {response.status_code} - {error_detail}"}
+                except:
+                    return {"success": False, "error": f"Failed to create issue: {response.status_code} - {response.text}"}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
     def create_issue(
         self,
         summary: str,
@@ -309,6 +360,9 @@ class JiraAgent(ServiceAgent):
                 }
             }
             
+            # 디버깅을 위한 로그
+            print(f"Create issue payload: {json.dumps(payload, indent=2)}")
+            
             # Add priority if specified
             if priority:
                 payload["fields"]["priority"] = {
@@ -326,10 +380,16 @@ class JiraAgent(ServiceAgent):
                 data=json.dumps(payload)
             )
             
+            print(f"Create issue response status: {response.status_code}")
             if response.status_code in [200, 201]:
                 return {"success": True, "data": response.json()}
             else:
-                return {"success": False, "error": f"Failed to create issue: {response.status_code}"}
+                try:
+                    error_detail = response.json()
+                    print(f"Error details: {json.dumps(error_detail, indent=2)}")
+                    return {"success": False, "error": f"Failed to create issue: {response.status_code} - {error_detail}"}
+                except:
+                    return {"success": False, "error": f"Failed to create issue: {response.status_code} - {response.text}"}
         except Exception as e:
             return {"success": False, "error": str(e)}
     
