@@ -40,10 +40,13 @@ docs/
 SUMMARY.md
 API.md
 
-# Test cache
+# Test cache and files
 .pytest_cache/
 .coverage
 htmlcov/
+test_*.py
+run_tests.py
+tests/
 
 # Logs
 *.log
@@ -70,3 +73,14 @@ notebooks/
 .env.development
 .env.test
 .env.production
+
+# Development schemas and config
+schemas/*.json
+config/
+
+# Unnecessary source files
+*/__init__.py
+src/agents/bitbucket_agent.py
+src/agents/pocket_agent.py
+src/agents/swdp_agent.py
+src/utils/db_utils.py
