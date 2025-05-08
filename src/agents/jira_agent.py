@@ -26,7 +26,7 @@ class JiraAgent(ServiceAgent):
             "Content-Type": "application/json",
             "Accept": "application/json"
         }
-    
+
     def process(self, request: Dict[str, Any]) -> Dict[str, Any]:
         """
         Process a Jira-related request
