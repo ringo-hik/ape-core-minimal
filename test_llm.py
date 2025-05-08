@@ -45,9 +45,11 @@ def test_llm_service():
     print("Testing LLM service...")
     
     # API 키는 .env 파일이나 환경 변수에서 불러와야 합니다
-    # 테스트용 기본 API 키 설정
+    # 환경 변수에 API 키가 없을 경우 경고 출력
     if "APE_OPENROUTER_API_KEY" not in os.environ:
-        os.environ["APE_OPENROUTER_API_KEY"] = "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"
+        print("WARNING: No OpenRouter API key found in environment variables.")
+        print("Please set APE_OPENROUTER_API_KEY in your .env file or environment.")
+        print("Tests may fail without a valid API key.")
     
     # 기본 모델을 Llama4로 설정
     os.environ["DEFAULT_MODEL"] = "meta-llama/llama-4-maverick"

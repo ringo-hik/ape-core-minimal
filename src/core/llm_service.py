@@ -40,9 +40,9 @@ class LLMService:
         # 기본 모델로 Llama 4 사용
         self.default_model = os.environ.get("DEFAULT_MODEL", LLMModel.LLAMA4)
         # API 키 설정 - OpenRouter API 키
-        self.api_key = os.environ.get("APE_OPENROUTER_API_KEY", "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")
+        self.api_key = os.environ.get("APE_OPENROUTER_API_KEY", "")
         # Anthropic API 키
-        self.anthropic_key = os.environ.get("APE_ANTHROPIC_API_KEY", "dummy-anthropic-key")
+        self.anthropic_key = os.environ.get("APE_ANTHROPIC_API_KEY", "")
     
     def get_active_model(self) -> str:
         """Get the currently active LLM model"""
@@ -186,13 +186,14 @@ class LLMService:
             headers["X-Title"] = "APE (Agentic Pipeline Engine)"
         
         try:
-            # Send request
-            response = requests.post(
-                self.endpoint,
-                json=request_body,
-                headers=headers,
-                timeout=30
-            )
+            # Send request with session and improved timeout handling
+            with requests.Session() as session:
+                session.headers.update(headers)
+                response = session.post(
+                    self.endpoint,
+                    json=request_body,
+                    timeout=(5, 60)  # Connect timeout: 5s, Read timeout: 60s
+                )
             
             # Check for errors
             response.raise_for_status()
@@ -203,33 +204,24 @@ class LLMService:
             # Process response based on model
             return self._process_response(data, model)
         except requests.exceptions.RequestException as e:
-            # For unauthorized or connection errors, return a mock response for testing
+            # Handle connection errors with more detailed error message
+            error_msg = f"Error connecting to LLM API: {str(e)}"
+            
+            # For unauthorized or connection errors, simply raise an informative error
             if hasattr(e, 'response') and e.response is not None:
                 status_code = e.response.status_code
-                error_message = str(e)
                 
-                # If unauthorized, use mock response
                 if status_code == 401:
-                    # Create a mock response for testing purposes
-                    mock_data = {
-                        "choices": [
-                            {
-                                "message": {
-                                    "role": "assistant",
-                                    "content": f"[MOCK RESPONSE] This is a simulated response because the API key didn't work. Actual error: {error_message}"
-                                }
-                            }
-                        ],
-                        "usage": {
-                            "prompt_tokens": 0,
-                            "completion_tokens": 0,
-                            "total_tokens": 0
-                        }
-                    }
-                    return self._process_response(mock_data, model)
+                    error_msg = f"Authentication error (401): Invalid API key or unauthorized access. Details: {str(e)}"
+                elif status_code == 404:
+                    error_msg = f"Not found error (404): The requested resource was not found. Details: {str(e)}"
+                elif status_code == 429:
+                    error_msg = f"Rate limit error (429): Too many requests. Please try again later. Details: {str(e)}"
+                elif status_code >= 500:
+                    error_msg = f"Server error ({status_code}): The LLM service is experiencing issues. Details: {str(e)}"
             
-            # Re-raise the exception for other errors
-            raise
+            # Raise exception with improved error message
+            raise requests.exceptions.RequestException(error_msg)
     
     def _process_response(self, response_data: Dict[str, Any], model: str) -> Dict[str, Any]:
         """
@@ -290,6 +282,14 @@ class LLMService:
         """
         # Create a simple message with the prompt
         messages = [{"role": MessageRole.USER, "content": prompt}]
+        
+        # Add system prompt if not provided
+        if "system_prompt" not in kwargs:
+            kwargs["system_prompt"] = "You are a helpful assistant. Provide clear, concise, and accurate information."
+        
+        # Add reasonable defaults for performance if not provided
+        if "temperature" not in kwargs:
+            kwargs["temperature"] = 0.7
         
         # Send the request
         result = self.send_request(messages, **kwargs)

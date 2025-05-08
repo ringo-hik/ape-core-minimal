@@ -128,23 +128,20 @@ class JiraAgent(ServiceAgent):
             True if authentication was successful, False otherwise
         """
         try:
-            print(f"Authenticating with Jira using email: {self.username}")
-            url = f"{self.base_url}/rest/api/2/myself"
-            print(f"Auth URL: {url}")
+            # Use session for better performance
+            with requests.Session() as session:
+                session.auth = self.auth
+                session.headers.update(self.headers)
+                
+                response = session.get(
+                    f"{self.base_url}/rest/api/2/myself",
+                    timeout=(5, 30)  # Connect timeout: 5s, Read timeout: 30s
+                )
             
-            response = requests.get(
-                url,
-                auth=self.auth,
-                headers=self.headers
-            )
-            
-            print(f"Authentication response status: {response.status_code}")
-            if response.status_code != 200:
-                print(f"Authentication error: {response.text}")
-            
+            # Simply check status code
             return response.status_code == 200
-        except Exception as e:
-            print(f"Authentication exception: {str(e)}")
+        except requests.exceptions.RequestException:
+            # Any request exception means authentication failed
             return False
     
     def get_service_info(self) -> Dict[str, Any]:

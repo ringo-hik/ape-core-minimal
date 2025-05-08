@@ -9,6 +9,7 @@ import os
 import json
 import time
 import uuid
+import re
 from typing import Dict, List, Any, Optional, Callable, Tuple, Union
 from ..core.agent_interface import BaseAgent
 from ..core.llm_service import LLMService, LLMModel, MessageRole
@@ -482,7 +483,24 @@ class Orchestrator:
         Returns:
             Parsed JSON object
         """
-        # Find JSON in the text
+        # Look for JSON code blocks (```json ... ```)
+        json_block_pattern = r"```(?:json)?\s*([\s\S]*?)\s*```"
+        json_blocks = re.findall(json_block_pattern, text)
+        
+        if json_blocks:
+            # Use the first JSON block found
+            try:
+                json_str = json_blocks[0].strip()
+                # Check if it's an array or object
+                if json_str.startswith("[") and json_str.endswith("]"):
+                    return json.loads(json_str)
+                elif json_str.startswith("{") and json_str.endswith("}"):
+                    return [json.loads(json_str)]
+            except json.JSONDecodeError:
+                # If the JSON in code block is invalid, fall back to direct search
+                pass
+        
+        # Direct search for JSON in the text as fallback
         json_start = text.find("[")
         json_end = text.rfind("]")
         
